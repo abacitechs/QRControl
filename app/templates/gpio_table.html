@@ -1,0 +1,290 @@
+{% extends "layout.html" %}
+
+{% block title %}GPIO Table{% endblock %}
+
+{% block content %}
+<h2>GPIO Table</h2>
+<table class="table table-bordered">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>BCM GPIO Number</th>
+      <th>Physical Pin Number</th>
+      <th>Notes</th>
+      <th>Action</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>1</td>
+      <td>GPIO 4</td>
+      <td>7</td>
+      <td>General-purpose GPIO.</td>
+      <td>
+        <form method="POST" action="{{ url_for('main.gpio_action') }}" onsubmit="return showLoader(this)">
+          <input type="hidden" name="pin_number" value="7">
+          <button type="submit" class="btn btn-primary">
+            <span class="loader d-none"></span> Activate
+          </button>
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>GPIO 5</td>
+      <td>29</td>
+      <td>General-purpose GPIO.</td>
+      <td>
+        <form method="POST" action="{{ url_for('main.gpio_action') }}" onsubmit="return showLoader(this)">
+          <input type="hidden" name="pin_number" value="29">
+          <button type="submit" class="btn btn-primary">
+            <span class="loader d-none"></span> Activate
+          </button>
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td>3</td>
+      <td>GPIO 6</td>
+      <td>31</td>
+      <td>General-purpose GPIO.</td>
+      <td>
+        <form method="POST" action="{{ url_for('main.gpio_action') }}" onsubmit="return showLoader(this)">
+          <input type="hidden" name="pin_number" value="31">
+          <button type="submit" class="btn btn-primary">
+            <span class="loader d-none"></span> Activate
+          </button>
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td>4</td>
+      <td>GPIO 12</td>
+      <td>32</td>
+      <td>General-purpose GPIO.</td>
+      <td>
+        <form method="POST" action="{{ url_for('main.gpio_action') }}" onsubmit="return showLoader(this)">
+          <input type="hidden" name="pin_number" value="32">
+          <button type="submit" class="btn btn-primary">
+            <span class="loader d-none"></span> Activate
+          </button>
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td>5</td>
+      <td>GPIO 13</td>
+      <td>33</td>
+      <td>General-purpose GPIO.</td>
+      <td>
+        <form method="POST" action="{{ url_for('main.gpio_action') }}" onsubmit="return showLoader(this)">
+          <input type="hidden" name="pin_number" value="33">
+          <button type="submit" class="btn btn-primary">
+            <span class="loader d-none"></span> Activate
+          </button>
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td>6</td>
+      <td>GPIO 16</td>
+      <td>36</td>
+      <td>General-purpose GPIO.</td>
+      <td>
+        <form method="POST" action="{{ url_for('main.gpio_action') }}" onsubmit="return showLoader(this)">
+          <input type="hidden" name="pin_number" value="36">
+          <button type="submit" class="btn btn-primary">
+            <span class="loader d-none"></span> Activate
+          </button>
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td>7</td>
+      <td>GPIO 17</td>
+      <td>11</td>
+      <td>General-purpose GPIO.</td>
+      <td>
+        <form method="POST" action="{{ url_for('main.gpio_action') }}" onsubmit="return showLoader(this)">
+          <input type="hidden" name="pin_number" value="11">
+          <button type="submit" class="btn btn-primary">
+            <span class="loader d-none"></span> Activate
+          </button>
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td>8</td>
+      <td>GPIO 18</td>
+      <td>12</td>
+      <td>General-purpose GPIO.</td>
+      <td>
+        <form method="POST" action="{{ url_for('main.gpio_action') }}" onsubmit="return showLoader(this)">
+          <input type="hidden" name="pin_number" value="12">
+          <button type="submit" class="btn btn-primary">
+            <span class="loader d-none"></span> Activate
+          </button>
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td>9</td>
+      <td>GPIO 19</td>
+      <td>35</td>
+      <td>Avoid SPI use.</td>
+      <td>
+        <form method="POST" action="{{ url_for('main.gpio_action') }}" onsubmit="return showLoader(this)">
+          <input type="hidden" name="pin_number" value="35">
+          <button type="submit" class="btn btn-primary">
+            <span class="loader d-none"></span> Activate
+          </button>
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td>10</td>
+      <td>GPIO 20</td>
+      <td>38</td>
+      <td>Avoid SPI use.</td>
+      <td>
+        <form method="POST" action="{{ url_for('main.gpio_action') }}" onsubmit="return showLoader(this)">
+          <input type="hidden" name="pin_number" value="38">
+          <button type="submit" class="btn btn-primary">
+            <span class="loader d-none"></span> Activate
+          </button>
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td>11</td>
+      <td>GPIO 21</td>
+      <td>40</td>
+      <td>Avoid SPI use.</td>
+      <td>
+        <form method="POST" action="{{ url_for('main.gpio_action') }}" onsubmit="return showLoader(this)">
+          <input type="hidden" name="pin_number" value="40">
+          <button type="submit" class="btn btn-primary">
+            <span class="loader d-none"></span> Activate
+          </button>
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td>12</td>
+      <td>GPIO 22</td>
+      <td>15</td>
+      <td>General-purpose GPIO.</td>
+      <td>
+        <form method="POST" action="{{ url_for('main.gpio_action') }}" onsubmit="return showLoader(this)">
+          <input type="hidden" name="pin_number" value="15">
+          <button type="submit" class="btn btn-primary">
+            <span class="loader d-none"></span> Activate
+          </button>
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td>13</td>
+      <td>GPIO 23</td>
+      <td>16</td>
+      <td>General-purpose GPIO.</td>
+      <td>
+        <form method="POST" action="{{ url_for('main.gpio_action') }}" onsubmit="return showLoader(this)">
+          <input type="hidden" name="pin_number" value="16">
+          <button type="submit" class="btn btn-primary">
+            <span class="loader d-none"></span> Activate
+          </button>
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td>14</td>
+      <td>GPIO 24</td>
+      <td>18</td>
+      <td>General-purpose GPIO.</td>
+      <td>
+        <form method="POST" action="{{ url_for('main.gpio_action') }}" onsubmit="return showLoader(this)">
+          <input type="hidden" name="pin_number" value="18">
+          <button type="submit" class="btn btn-primary">
+            <span class="loader d-none"></span> Activate
+          </button>
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td>15</td>
+      <td>GPIO 25</td>
+      <td>22</td>
+      <td>General-purpose GPIO.</td>
+      <td>
+        <form method="POST" action="{{ url_for('main.gpio_action') }}" onsubmit="return showLoader(this)">
+          <input type="hidden" name="pin_number" value="22">
+          <button type="submit" class="btn btn-primary">
+            <span class="loader d-none"></span> Activate
+          </button>
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td>16</td>
+      <td>GPIO 26</td>
+      <td>37</td>
+      <td>General-purpose GPIO.</td>
+      <td>
+        <form method="POST" action="{{ url_for('main.gpio_action') }}" onsubmit="return showLoader(this)">
+          <input type="hidden" name="pin_number" value="37">
+          <button type="submit" class="btn btn-primary">
+            <span class="loader d-none"></span> Activate
+          </button>
+        </form>
+      </td>
+    </tr>
+    <tr>
+      <td>17</td>
+      <td>GPIO 27</td>
+      <td>13</td>
+      <td>General-purpose GPIO.</td>
+      <td>
+        <form method="POST" action="{{ url_for('main.gpio_action') }}" onsubmit="return showLoader(this)">
+          <input type="hidden" name="pin_number" value="13">
+          <button type="submit" class="btn btn-primary">
+            <span class="loader d-none"></span> Activate
+          </button>
+        </form>
+      </td>
+    </tr>
+  </tbody>
+</table>
+
+<script>
+  function showLoader(form) {
+    const button = form.querySelector('button[type="submit"]');
+    const loader = button.querySelector('.loader');
+
+    // Disable the button
+    button.disabled = true;
+
+    // Show the loader icon
+    loader.classList.remove('d-none');
+    loader.classList.add('spinner-border', 'spinner-border-sm', 'me-2');
+
+    // Allow the form to submit after showing loader
+    setTimeout(() => {
+        form.submit();
+        setTimeout(() => {
+          // Additional actions after submission (if needed)
+        }, 2000); // Delay after submission
+      }, 0); // Delay before submission (optional)
+
+    // Prevent immediate submission for loader effect
+    return false;
+  }
+</script>
+
+<style>
+  .loader {
+    display: inline-block;
+    margin-right: 8px;
+  }
+</style>
+{% endblock %}

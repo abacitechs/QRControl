@@ -1,0 +1,119 @@
+{% extends "layout.html" %} {% block title %}Home{% endblock %} {% block content
+%}
+<div class="container mt-4">
+  <h2>Welcome, {{ user.username }}!</h2>
+  <p>Here are the system details:</p>
+  <form method="POST" action="{{ url_for('main.system_details_update') }}">
+    <input type="hidden" name="_method" value="PATCH" />
+    <input type="hidden" id="action" name="action" value="" />
+    <table class="table table-bordered">
+      <thead>
+        <tr>
+          <th>Field</th>
+          <th>Value</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% if 'server_url' in details %}
+        <tr>
+          <td>Server URL</td>
+          <td>
+            {% if details.server_url %} {{ details.server_url }} {% else %}
+            <input
+              type="text"
+              name="server_url"
+              class="form-control"
+              placeholder="Enter Server URL"
+              required
+            />
+            {% endif %}
+          </td>
+        </tr>
+        {% endif %} {% if 'device_name' in details %}
+        <tr>
+          <td>Device Name</td>
+          <td>
+            {% if details.device_name %} {{ details.device_name }} {% else %}
+            <input
+              type="text"
+              name="device_name"
+              class="form-control"
+              placeholder="Enter Device Name"
+            />
+            {% endif %}
+          </td>
+        </tr>
+        {% endif %} {% if 'device_id' in details %}
+        <tr>
+          <td>Device ID</td>
+          <td>{{ details.device_id }}</td>
+        </tr>
+        {% endif %} {% if details.tenant == None %}
+        <tr>
+          <td>Device Activated</td>
+          <td>No</td>
+        </tr>
+        {% endif %} {% if 'tenant' in details and details.tenant%}
+        <tr>
+          <td>Tenant</td>
+          <td>{{ details.tenant }}</td>
+        </tr>
+        {% endif %} {% if 'server_availability' in details %}
+        <tr>
+          <td>Server Connectivity</td>
+          <td>{{ details.server_availability }}</td>
+        </tr>
+        {% endif %}
+      </tbody>
+    </table>
+
+    {% if details.server_url == "" %}
+    <button
+      type="submit"
+      class="btn btn-primary mt-3"
+      onclick="document.getElementById('action').value = 'update_server_url';"
+    >
+      Update Server URL
+    </button>
+    {% endif %} {% if details.device_name == "" %}
+    <button
+      type="submit"
+      class="btn btn-primary mt-3"
+      onclick="document.getElementById('action').value = 'set_device_name';"
+    >
+      Set Device Name
+    </button>
+    <button
+      type="submit"
+      class="btn btn-danger mt-3"
+      onclick="document.getElementById('action').value = 'reset_server_url';"
+    >
+      Reset Server URL
+    </button>
+    {% endif %} {% if details.device_id == "" %}
+    <button
+      type="submit"
+      class="btn btn-primary mt-3"
+      onclick="document.getElementById('action').value = 'get_device_id';"
+    >
+      Get Device ID
+    </button>
+    <button
+      type="submit"
+      class="btn btn-danger mt-3"
+      onclick="document.getElementById('action').value = 'reset_device_name';"
+    >
+      Reset Device Name
+    </button>
+    {% endif %} {% if 'device_id' in details and details.device_id != "" %}
+    <button
+      type="submit"
+      class="btn btn-danger mt-3"
+      onclick="if(confirm('Are you sure you want to reset the device?')) { document.getElementById('action').value = 'reset_device'; } else { return false; }"
+    >
+      Reset Device
+    </button>
+    {% endif %}
+  </form>
+</div>
+{% endblock %}
