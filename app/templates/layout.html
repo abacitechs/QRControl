@@ -14,22 +14,14 @@
       href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css"
       rel="stylesheet"
     />
+
     <style>
-      .navbar-items {
-        display: none;
-      }
-
+      /* Your existing CSS styles */
+      .navbar-items { display: none; }
       @media screen and (min-width: 992px) {
-        .navbar-items {
-          display: none; 
-        }
-
-        .navbar-toggler {
-          display: none;
-        }
+        .navbar-items { display: none; }
+        .navbar-toggler { display: none; }
       }
-
-      /* Hamburger menu */
       .navbar-toggler {
         display: block; 
         background-color: transparent;
@@ -37,7 +29,6 @@
         cursor: pointer;
         padding: 10px;
       }
-
       .navbar-toggler-icon {
         width: 30px;
         height: 3px;
@@ -45,7 +36,6 @@
         display: block;
         position: relative;
       }
-
       .navbar-toggler-icon::before,
       .navbar-toggler-icon::after {
         content: "";
@@ -56,16 +46,8 @@
         left: 0;
         transition: 0.3s;
       }
-
-      .navbar-toggler-icon::before {
-        top: -8px;
-      }
-
-      .navbar-toggler-icon::after {
-        top: 8px;
-      }
-
-      /* When the navbar is active, show the items */
+      .navbar-toggler-icon::before { top: -8px; }
+      .navbar-toggler-icon::after { top: 8px; }
       .navbar-items.active {
         display: block;
         position: absolute;
@@ -76,8 +58,6 @@
         padding: 20px;
         box-shadow: 0px 5px 15px rgba(0, 0, 0, 0.1);
       }
-
-      /* Style for the menu items on small screens */
       .navbar-items ul {
         list-style-type: none;
         padding: 0;
@@ -94,17 +74,92 @@
       .navbar-toggler:active {
         outline: none !important;
         border: none !important;
-        box-shadow: none !important; 
+        box-shadow: none !important;
       }
       .navbar-toggler-icon {
         border: none !important;
-        box-shadow: none !important; 
+        box-shadow: none !important;
       }
       .navbar-toggler:focus {
         outline: none !important;
         border: 2px solid transparent !important;
       }
     </style>
+
+    <!-- Load Socket.IO client library -->
+    <script src="https://cdn.socket.io/4.0.1/socket.io.min.js"></script>
+
+    <!-- Socket.IO connection script -->
+<script>
+  {% if socket_token and socket_token.socket_token %}
+  document.addEventListener('DOMContentLoaded', function () {
+    const token = "{{ socket_token.socket_token }}";
+    const serverUrl = window.location.protocol + '//' + window.location.hostname + ':3000';
+
+    // Connect to Socket.IO server
+    const socketOptions = { auth: { token: token } };
+    const socket = io(serverUrl, socketOptions);
+
+    // Array to store up to 10 messages with their timestamps
+    const messages = [];
+
+    // Reference to table body for quick access
+    const tableBody = document.querySelector('#messagesTable tbody');
+
+    // Function to update table based on messages array
+    function updateTable() {
+      if (!tableBody) return; // Safety check
+      tableBody.innerHTML = ''; // Clear existing rows
+
+      messages.forEach(function (msg) {
+        const row = document.createElement('tr');
+
+        // Create a cell for timestamp
+        const cellTimeStamp = document.createElement('td');
+        cellTimeStamp.textContent = msg.time;
+
+        // Create a cell for the message
+        const cellMessage = document.createElement('td');
+        cellMessage.textContent = msg.text;
+
+        // Append cells to the row
+        row.appendChild(cellTimeStamp);
+        row.appendChild(cellMessage);
+
+        // Append the row to the table body
+        tableBody.appendChild(row);
+      });
+    }
+
+    socket.on('connect', function () {
+      console.log('Connected to Socket.IO server with ID:', socket.id);
+      socket.emit('message', 'Hello from Flask client!');
+    });
+
+    socket.on('message', function (data) {
+      console.log('Message from server:', data);
+
+      // Insert new message at the beginning with its timestamp
+      messages.unshift({ time: new Date().toLocaleString(), text: data });
+
+      // Keep only the 10 most recent messages
+      if (messages.length > 10) {
+        messages.pop();
+      }
+
+      // Update the table to display the current messages
+      updateTable();
+    });
+
+    socket.on('connect_error', function (err) {
+      console.error('Connection error:', err);
+    });
+  });
+  {% endif %}
+</script>
+
+    
+    
   </head>
 
   <body>
@@ -121,9 +176,7 @@
               <a class="nav-link" href="{{ url_for('main.gpio_table') }}">GPIO Table</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('auth.change_password') }}"
-                >Change Password</a
-              >
+              <a class="nav-link" href="{{ url_for('auth.change_password') }}">Change Password</a>
             </li>
           </ul>
           <ul class="navbar-nav ms-auto">
@@ -150,9 +203,7 @@
               <a class="nav-link" href="{{ url_for('main.home') }}">Home</a>
             </li>
             <li class="nav-item">
-              <a class="nav-link" href="{{ url_for('auth.change_password') }}"
-                >Change Password</a
-              >
+              <a class="nav-link" href="{{ url_for('auth.change_password') }}">Change Password</a>
             </li>
             <li class="nav-item">
               <a
@@ -171,31 +222,40 @@
 
     <div class="container mt-4">
       <!-- Flash Messages -->
-      {% with messages = get_flashed_messages(with_categories=true) %} {% if
-      messages %}
-      <div class="alert-container">
-        {% for category, message in messages %}
-        <div
-          class="alert alert-{{ category }} alert-dismissible fade show"
-          role="alert"
-        >
-          {{ message }}
-          <button
-            type="button"
-            class="btn-close"
-            data-bs-dismiss="alert"
-            aria-label="Close"
-          ></button>
-        </div>
-        {% endfor %}
-      </div>
-      {% endif %} {% endwith %}
+      {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+          <div class="alert-container">
+            {% for category, message in messages %}
+              <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+              </div>
+            {% endfor %}
+          </div>
+        {% endif %}
+      {% endwith %}
 
       <!-- Page Content -->
       {% block content %}{% endblock %}
     </div>
+    <div style="padding: 100px;">
+      {% if socket_token and socket_token.socket_token %}
+    <h2>Messages</h2>
+    <table class="table" id="messagesTable">
+      <thead>
+        <tr>
+          <th>Time</th>
+          <th>Message</th>
+        </tr>
+      </thead>
+      <tbody>
+        <!-- Rows will be inserted here dynamically -->
+      </tbody>
+    </table>
+    {% endif %}
 
-    <!-- Bootstrap JS -->
+  </div>
+    <!-- Bootstrap Bundle JS -->
     <script src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
     <script>
       // Automatically close flash messages after 3 seconds
@@ -212,9 +272,7 @@
       const items = document.getElementById("navbar-items");
 
       toggler.addEventListener("click", function () {
-        items.classList.toggle(
-          "active"
-        ); /* Toggle the visibility of the menu items */
+        items.classList.toggle("active"); // Toggle visibility of menu items
       });
     </script>
   </body>

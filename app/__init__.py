@@ -2,11 +2,22 @@ from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 import bcrypt
+from .redis_actions import sync_to_redis,redis_client  # Ensure this file handles Redis actions
+import json
 
 # Initialize extensions
 db = SQLAlchemy()
 login_manager = LoginManager()
 
+def sync_to_redis(key, value):
+    """
+    Sync a key-value pair to Redis.
+    """
+    try:
+        redis_client.set(key, value)
+        print(f"Synced {key} to Redis.")
+    except Exception as e:
+        print(f"Error syncing {key} to Redis: {e}")
 
 def create_app():
     # Initialize Flask app
@@ -44,5 +55,10 @@ def create_app():
             admin_user = User(username="admin", password=hashed_password)
             db.session.add(admin_user)
             db.session.commit()
+
+        # Sync initial SystemDetails to Redis
+        from .models import SystemDetails
+        system_info = SystemDetails.get_or_create()  # Use the existing method to fetch or create details
+        sync_to_redis("system_info", json.dumps(system_info.to_dict()))  # Ensure `to_dict` serializes the object
 
     return app

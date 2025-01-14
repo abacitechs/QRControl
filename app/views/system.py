@@ -13,8 +13,7 @@ def get_system_details():
         "device_id": details.device_id,
         "device_name": details.device_name,
         "device_secret": details.device_secret,
-        "device_activated": details.device_activated,
-        "device_online_status": details.device_online_status,
+        "device_activated": details.device_activated
     }
     return jsonify(results)
 

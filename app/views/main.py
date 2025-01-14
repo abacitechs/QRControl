@@ -5,13 +5,23 @@ from .. import db
 import re
 import requests
 import secrets
-
+from ..gpio_actions import toggle_gpio
+from ..redis_actions import sync_to_redis,get_from_redis
+import json
 
 main_bp = Blueprint('main', __name__)
+
+def update_systeminfo_in_redis():
+    details = SystemDetails.get_or_create()
+    sync_to_redis("system_info",json.dumps(details.to_dict())) 
+
+
 
 @main_bp.route('/')
 @login_required
 def home():
+    socket_token = {"socket_token" : secrets.token_hex(32)}
+    sync_to_redis("socket_token",socket_token["socket_token"])
     # Fetch system details
     details = SystemDetails.get_or_create()
     if details.server_url == "":
@@ -32,7 +42,7 @@ def home():
         "device_id": details.device_id
         }
         return render_template('home.html', user=current_user, details=results)
-    else:
+    elif details.tenant == "":
         url = details.server_url + '/public_api/qrcontroller_client_fetch'
         data = {
                     "device_id": details.device_id,
@@ -41,6 +51,11 @@ def home():
         try:
             # Make the POST request
             response = requests.post(url, json=data)
+            tenant = response.json().get('tenant', None)
+            if tenant is not None:
+                details.tenant = tenant
+                db.session.commit()
+                update_systeminfo_in_redis()
             results = {
                 "server_url": details.server_url,
                 "device_name": details.device_name,
@@ -57,7 +72,17 @@ def home():
                 "server_availability": False,
             }
             return render_template('home.html', user=current_user, details=results)
-    # return render_template('home.html', user=current_user, details=results)
+    else:
+        server_connectivity = get_from_redis("server_connectivity")
+        server_availability = "False" if server_connectivity is None else server_connectivity
+        results = {
+                "server_url": details.server_url,
+                "device_name": details.device_name,
+                "device_id": details.device_id,
+                "tenant": details.tenant,
+                "server_availability": server_availability,
+            }
+        return render_template('home.html', user=current_user, details=results, socket_token = socket_token)
         
 
 @main_bp.route('/system_details_update', methods=['POST'])
@@ -82,6 +107,8 @@ def system_details_update():
 
             # Commit the updates to the database
             db.session.commit()
+            update_systeminfo_in_redis()
+
 
             flash('Server URL updated successfully.', 'success')
             return redirect(url_for('main.home'))
@@ -89,6 +116,7 @@ def system_details_update():
         details.server_url = ""
         # Commit the updates to the database
         db.session.commit()
+        update_systeminfo_in_redis()
         flash('Server URL reset successfully.', 'success')
         return redirect(url_for('main.home'))
     elif action == 'set_device_name':
@@ -102,12 +130,15 @@ def system_details_update():
             details.device_name = device_name
             # Commit the updates to the database
             db.session.commit()
+            update_systeminfo_in_redis()
             flash('Device Name updated successfully.', 'success')
             return redirect(url_for('main.home'))
     elif action == 'reset_device_name':
         details.device_name = ""
         # Commit the updates to the database
         db.session.commit()
+        update_systeminfo_in_redis()
+
         flash('Device name reset successfully.', 'success')
         return redirect(url_for('main.home'))
     elif action == 'get_device_id':
@@ -128,6 +159,7 @@ def system_details_update():
                 if device_id is not None:
                     details.device_id = device_id
                     db.session.commit()
+                    update_systeminfo_in_redis()
                     flash('Device ID fetched successfully.', 'success')
                     return redirect(url_for('main.home'))
                 else:
@@ -144,10 +176,11 @@ def system_details_update():
         details.server_url = ""
         details.device_name = ""
         details.device_id = ""
+        details.tenant = ""
         details.device_secret = secrets.token_hex(32)
-        details.device_online_status = False
         # Commit the updates to the database
         db.session.commit()
+        update_systeminfo_in_redis()
         flash('Device ID reset successfully.', 'success')
         return redirect(url_for('main.home'))
     else:
@@ -178,9 +211,9 @@ def gpio_table():
 @login_required
 def gpio_action():
     pin_number = request.form.get('pin_number')
-    print("..................pin_number",pin_number)
     if pin_number:
         # Perform GPIO activation or any related action here
+        toggle_gpio(int(pin_number))
         flash(f'GPIO {pin_number} activated successfully.', 'success')
     else:
         flash('Failed to activate GPIO. Pin number is missing.', 'danger')
