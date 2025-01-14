@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - master
-
 jobs:
   build:
     runs-on: ubuntu-latest  # specifies that the job will run on the latest version of the Ubuntu runner provided by GitHub Actions.
