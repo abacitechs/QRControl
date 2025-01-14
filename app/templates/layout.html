@@ -94,7 +94,7 @@
   {% if socket_token and socket_token.socket_token %}
   document.addEventListener('DOMContentLoaded', function () {
     const token = "{{ socket_token.socket_token }}";
-    const serverUrl = window.location.protocol + '//' + window.location.hostname + ':3000';
+    const serverUrl = window.location.protocol + '//' + window.location.hostname;
 
     // Connect to Socket.IO server
     const socketOptions = { auth: { token: token } };
