@@ -3,12 +3,18 @@
 # Exit immediately if a command exits with a non-zero status
 set -e
 
-# Activate the virtual environment
-if [ -f "venv/bin/activate" ]; then
+# Check if the script is being run from the correct directory
+if [ ! -f "app.py" ]; then
+    echo "Error: app.py not found in the current directory. Please run this script from the application's root directory."
+    exit 1
+fi
+
+# Check and activate the virtual environment
+if [ -d "venv" ] && [ -f "venv/bin/activate" ]; then
     source venv/bin/activate
     echo "Virtual environment activated."
 else
-    echo "Virtual environment not found. Please ensure 'venv' exists."
+    echo "Error: Virtual environment not found. Please ensure 'venv' exists and is properly set up."
     exit 1
 fi
 
@@ -21,10 +27,16 @@ export REDISHOST='127.0.0.1'
 export REDISPORT='6379'
 export IS_RASPBERRY='true'
 
-# Run the Python application
-if [ -f "app.py" ]; then
-    python app.py
-else
-    echo "app.py not found. Please ensure the script exists in the current directory."
-    exit 1
-fi
+# Print a message with the environment variables
+echo "Starting the application with the following settings:"
+echo "FLASK_HOST=$FLASK_HOST"
+echo "FLASK_PORT=$FLASK_PORT"
+echo "FLASK_DEBUG=$FLASK_DEBUG"
+echo "REDISHOST=$REDISHOST"
+echo "REDISPORT=$REDISPORT"
+echo "IS_RASPBERRY=$IS_RASPBERRY"
+
+python app.py
+# Run the Python application using Gunicorn
+# gunicorn --bind "$FLASK_HOST:$FLASK_PORT" "app:create_app()"
+

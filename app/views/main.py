@@ -143,10 +143,12 @@ def system_details_update():
         return redirect(url_for('main.home'))
     elif action == 'get_device_id':
         url = details.server_url + '/public_api/qrcontroller_id_fetch'
+
         data = {
             "device_name": details.device_name,
-            "secret": details.device_secret
-        }
+            "secret": details.device_secret,
+            "gpio_pins":[4,5,6,12,13,16,17,18,19,20,21,22,23,24,25,26,27]
+            }
         
         try:
             # Make the POST request
